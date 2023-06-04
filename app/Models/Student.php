@@ -26,7 +26,7 @@ class Student extends Model
     ];
 
 
-    public function student(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

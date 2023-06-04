@@ -30,17 +30,5 @@ Route::get('/requests', [RequestController::class, 'index'])->name('requests')->
 Route::post('/request', [RequestController::class, 'store'])->name('add_request')->middleware('auth:sanctum');
 Route::post('/request/{id}', [RequestController::class, 'update'])->name('update_request')->middleware('auth:sanctum');
 Route::delete('/request/destroy/{id}', [RequestController::class, 'destroy'])->name('destroy_request')->middleware('auth:sanctum');
+Route::post('/request/update/{id}', [RequestController::class, 'update'])->name('update_request')->middleware('auth:sanctum');
 
-//Route::get("/requests",[RequestController::class, 'getRequests']);
-//Route::patch("/hod-accept-Request",[RequestController::class, 'hodatRequest']);
-//
-//// Registration routes
-//Route::post('/register', [AuthController::class, 'register'])->name('register');
-//
-//// Login routes
-//Route::post('/login', [AuthController::class, 'login'])->name('login');
-//
-//// Logout route
-//Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-//
-//Route::post('/evaluate', [\App\Http\Controllers\NotationController::class, 'store'])->middleware('auth:sanctum', 'verified');
