@@ -14,6 +14,14 @@ class Internship extends Model
 
     public $timestamps = false;
 
+    protected $fillable = [
+        'student_id',
+        'supervisor_id',
+        'start_date',
+        'end_date',
+        'duration'
+    ];
+
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);

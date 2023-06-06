@@ -32,7 +32,7 @@ class RequestController extends Controller
         } else if ($request->user()->role == 2) {
             $internshipRequests = [];
             $supervisor_id = $request->user()->supervisor->id;
-            $requests = \App\Models\Request::where('supervisor_id', $supervisor_id)->get();
+            $requests = \App\Models\Request::where('supervisor_id', $supervisor_id)->where('status', 1)->get();
             foreach ($requests as $internshipRequest) {
                 $student = $internshipRequest->student;
                 $user = $student->user;
@@ -68,26 +68,13 @@ class RequestController extends Controller
         $student_id = $user->student->id;
 
         if (!User::where('email', $request->supervisor_email)->exists()) {
-            $password = Str::random(12);
-
-            $user = User::create([
-                'email' => $request->supervisor_email,
-                'password' => bcrypt($password),
-                'first_name' => $request->supervisor_first_name,
-                'last_name' => $request->supervisor_last_name,
-                'role' => 2
-            ]);
-
-            $supervisor = Supervisor::create([
-                'user_id' => $user->id,
-            ]);
 
             $internshipRequest = \App\Models\Request::create([
                 'student_id' => $student_id,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
                 'duration' => (round((strtotime($request->end_date) - strtotime($request->start_date)) / 86400)),
-                'supervisor_id' => $supervisor->id,
+                'supervisor_id' => null,
                 'supervisor_email' => $request->supervisor_email,
                 'supervisor_first_name' => $request->supervisor_first_name,
                 'supervisor_last_name' => $request->supervisor_last_name,
@@ -96,13 +83,10 @@ class RequestController extends Controller
                 'title' => $request->title
             ]);
 
-            Mail::to($internshipRequest->supervisor_email)->send(new AccountCreated($internshipRequest->supervisor_email, $password));
-
             return response()->json(
                 [
-                    "message" => "account created and email sent successfully",
-                    "request" => $internshipRequest, "user" => $user, "supervisor" => $supervisor,
-                    "password" => $password
+                    "message" => "internship request successful",
+                    "request" => $internshipRequest,
                 ],
                 201
             );
@@ -155,7 +139,7 @@ class RequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
+    public function update(string $id, Request $request): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Foundation\Application|\Illuminate\Http\Response
     {
         $internshipRequest = \App\Models\Request::findOrFail($id);
 
@@ -164,22 +148,45 @@ class RequestController extends Controller
             $internshipRequest->rejection_motive = $request->rejection_motive;
             $internshipRequest->status = $request->status;
             $internshipRequest->save();
-            return response(compact('internshipRequest'));
+            $message = "Request refused successfully";
+            return response(compact('internshipRequest', 'message'),);
         }
 
-        $internshipRequest->status = $request->status;
-        $internshipRequest->save();
+//        status:1 => accepted by HOD
+        if ($request->status == 1) {
+            $internshipRequest->status = $request->status;
+            $internshipRequest->save();
+
+            $password = Str::random(12);
+
+            $user = User::create([
+                'email' => $internshipRequest->supervisor_email,
+                'password' => bcrypt($password),
+                'first_name' => $internshipRequest->supervisor_first_name,
+                'last_name' => $internshipRequest->supervisor_last_name,
+                'role' => 2
+            ]);
+
+            $supervisor = Supervisor::create([
+                'user_id' => $user->id,
+            ]);
+
+            Mail::to($internshipRequest->supervisor_email)->send(new AccountCreated($internshipRequest->supervisor_email, $password));
+
+            return Response(['message' => 'internship accepted by hod and supervisor account created successfully', 'supervisorUser' => $user, 'supervisor' => $supervisor]);
+        }
 
         // status:3 => accepted by HOD and supervisor
         if ($request->status == 3) {
             $internship = Internship::create([
                 'student_id' => $internshipRequest->student_id,
-                'supervisor_id' => $internshipRequest->student_id,
+                'supervisor_id' => $internshipRequest->supervisor_id,
                 'start_date' => $internshipRequest->start_date,
                 'end_date' => $internshipRequest->end_date,
                 'duration' => $internshipRequest->duration,
             ]);
-            return response(compact('internshipRequest', 'internship'));
+            $message = "Request accepted successfully";
+            return response(compact('message', 'internshipRequest', 'internship'));
         }
 
         return response(compact('internshipRequest'));

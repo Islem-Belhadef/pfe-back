@@ -28,7 +28,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 // Internship requests routes
 Route::get('/requests', [RequestController::class, 'index'])->name('requests')->middleware('auth:sanctum');
 Route::post('/request', [RequestController::class, 'store'])->name('add_request')->middleware('auth:sanctum');
-Route::post('/request/{id}', [RequestController::class, 'update'])->name('update_request')->middleware('auth:sanctum');
-Route::delete('/request/destroy/{id}', [RequestController::class, 'destroy'])->name('destroy_request')->middleware('auth:sanctum');
-Route::post('/request/update/{id}', [RequestController::class, 'update'])->name('update_request')->middleware('auth:sanctum');
+//Route::post('/requests/{id}', [RequestController::class, 'update'])->name('update_request')->middleware('auth:sanctum');
+Route::delete('/requests/destroy/{id}', [RequestController::class, 'destroy'])->name('destroy_request')->middleware('auth:sanctum');
+Route::post('/requests/update/{id}', [RequestController::class, 'update'])->name('update_request')->middleware('auth:sanctum');
 

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('supervisor_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('supervisor_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->date('start_date');
             $table->date('end_date');
             $table->string('status');
