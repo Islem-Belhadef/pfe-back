@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InternshipController;
 use App\Http\Controllers\RequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,15 +21,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Auth routes
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('logout');
 
-// Internship requests routes
 Route::get('/requests', [RequestController::class, 'index'])->name('requests')->middleware('auth:sanctum');
 Route::post('/request', [RequestController::class, 'store'])->name('add_request')->middleware('auth:sanctum');
-//Route::post('/requests/{id}', [RequestController::class, 'update'])->name('update_request')->middleware('auth:sanctum');
 Route::delete('/requests/destroy/{id}', [RequestController::class, 'destroy'])->name('destroy_request')->middleware('auth:sanctum');
 Route::post('/requests/update/{id}', [RequestController::class, 'update'])->name('update_request')->middleware('auth:sanctum');
 
+Route::get('/internships', [InternshipController::class, 'index'])->name('internships')->middleware('auth:sanctum');

@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Mail\AccountCreated;
 use App\Models\Internship;
-use App\Models\Student;
 use App\Models\Supervisor;
 use App\Models\User;
-use http\Env\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
