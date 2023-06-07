@@ -151,8 +151,6 @@ class RequestController extends Controller
 
 //        status:1 => accepted by HOD
         if ($request->status == 1) {
-            $internshipRequest->status = $request->status;
-            $internshipRequest->save();
 
             $password = Str::random(12);
 
@@ -168,6 +166,10 @@ class RequestController extends Controller
                 'user_id' => $user->id,
             ]);
 
+            $internshipRequest->status = $request->status;
+            $internshipRequest->supervisor_id = $supervisor->id;
+            $internshipRequest->save();
+
             Mail::to($internshipRequest->supervisor_email)->send(new AccountCreated($internshipRequest->supervisor_email, $password));
 
             return Response(['message' => 'internship accepted by hod and supervisor account created successfully', 'supervisorUser' => $user, 'supervisor' => $supervisor]);
@@ -182,7 +184,12 @@ class RequestController extends Controller
                 'end_date' => $internshipRequest->end_date,
                 'duration' => $internshipRequest->duration,
             ]);
+
+            $internshipRequest->status = $request->status;
+            $internshipRequest->save();
+
             $message = "Request accepted successfully";
+
             return response(compact('message', 'internshipRequest', 'internship'));
         }
 

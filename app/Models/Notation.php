@@ -12,6 +12,16 @@ class Notation extends Model
 
     public $timestamps = false;
 
+    protected $fillable = [
+        'internship_id',
+        'discipline',
+        'aptitude',
+        'initiative',
+        'innovation',
+        'acquired_knowledge',
+        'note'
+    ];
+
     public function internship(): BelongsTo
     {
         return $this->belongsTo(Internship::class);

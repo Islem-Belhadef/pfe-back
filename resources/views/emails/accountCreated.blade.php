@@ -10,7 +10,7 @@
         <h2>Compte superviseur</h2>
     </div>
     <div class="content">
-        <p style="color: #616373;">Votre compte superviseur de stage a été crée</p>
+        <p style="color: #616373;">Votre compte sur Université Constantine 2 Stages a été crée</p>
         <p style="color: #616373;">
             Voici votre informations de connexion pour acceder a votre compte:
         </p>
